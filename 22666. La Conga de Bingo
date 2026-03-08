@@ -1,0 +1,140 @@
+/*
+    Problema: La Conga de Bingo
+    https://omegaup.com/arena/problem/La-Conga-de-Bingo/
+
+    ------------------------------------------------------------
+
+    Descripción:
+
+    Se tienen N participantes. Cada participante tiene tres
+    valores asociados (por ejemplo características o atributos).
+
+    El objetivo es encontrar la longitud máxima de una secuencia
+    de participantes tal que cada participante siguiente tenga
+    valores estrictamente mayores en las tres dimensiones
+    respecto al participante anterior.
+
+    Es decir, si tenemos dos participantes:
+
+        A = (a1, a2, a3)
+        B = (b1, b2, b3)
+
+    B puede seguir a A en la secuencia solo si:
+
+        a1 < b1
+        a2 < b2
+        a3 < b3
+
+    ------------------------------------------------------------
+
+    Idea de la solución:
+
+    Este problema es una variante del problema conocido como
+    "Longest Increasing Subsequence (LIS)" pero en 3 dimensiones.
+
+    Estrategia:
+
+    1. Leer los N triples de datos.
+    2. Ordenar los triples para facilitar la construcción
+       de la subsecuencia creciente.
+    3. Usar programación dinámica para calcular la
+       subsecuencia creciente más larga.
+
+    Definimos:
+
+        dp[i]
+
+    como la longitud de la subsecuencia válida más larga
+    que termina en el elemento i.
+
+    Para cada elemento i revisamos todos los elementos
+    anteriores j:
+
+        si datos[j] < datos[i] en las tres dimensiones
+
+    entonces podemos extender la subsecuencia:
+
+        dp[i] = max(dp[i], dp[j] + 1)
+
+    ------------------------------------------------------------
+
+    Complejidad:
+
+        Ordenamiento: O(n log n)
+        Programación dinámica: O(n²)
+
+        Complejidad total:
+
+            O(n²)
+
+    ------------------------------------------------------------
+*/
+
+#include <iostream>
+#include <vector>
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+
+    int n;
+
+    // Leer número de participantes
+    cin >> n;
+
+    /*
+        Matriz donde cada fila contiene
+        los tres valores de cada participante
+    */
+    vector<vector<int>> datos(n, vector<int>(3));
+
+    // Leer los triples
+    for (int i = 0; i < n; i++) {
+        cin >> datos[i][0] >> datos[i][1] >> datos[i][2];
+    }
+
+    /*
+        Ordenamos los participantes para facilitar
+        la construcción de la subsecuencia creciente
+    */
+    sort(datos.begin(), datos.end());
+
+    /*
+        dp[i] = longitud máxima de subsecuencia válida
+        que termina en el elemento i
+    */
+    vector<int> dp(n, 1);
+
+    int gor = 1;  // Guardará la longitud máxima encontrada
+
+    /*
+        Calculamos la subsecuencia creciente en 3 dimensiones
+    */
+    for (int i = 0; i < n; i++) {
+
+        for (int j = 0; j < i; j++) {
+
+            /*
+                Verificamos que el elemento j
+                sea estrictamente menor que i
+                en las tres dimensiones
+            */
+            if (datos[j][0] < datos[i][0] &&
+                datos[j][1] < datos[i][1] &&
+                datos[j][2] < datos[i][2]) {
+
+                // Extendemos la subsecuencia
+                dp[i] = max(dp[i], dp[j] + 1);
+            }
+        }
+
+        // Actualizamos la mejor respuesta encontrada
+        gor = max(gor, dp[i]);
+    }
+
+    // Imprimir la longitud máxima de la secuencia válida
+    cout << gor << endl;
+
+    return 0;
+}

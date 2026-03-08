@@ -1,0 +1,118 @@
+/*
+    Problema: Banderas al Viento
+    https://omegaup.com/arena/problem/Banderas-al-Viento/
+
+    ------------------------------------------------------------
+
+    Descripción:
+
+    El problema pide generar un patrón de coordenadas (x, 0)
+    distribuidas en una cuadrícula de 5 filas por 5 columnas.
+
+    Los valores de x dependen de un número entero n que se
+    recibe como entrada.
+
+    El patrón se construye usando múltiplos de n.
+
+    Inicialmente se genera el arreglo:
+
+        {4n, 3n, 2n, 3n, 4n}
+
+    que representa los valores de la primera fila.
+
+    A partir de este arreglo se generan las demás filas
+    modificando sus valores dependiendo de la posición.
+
+    ------------------------------------------------------------
+
+    Idea de la solución:
+
+    1. Se lee el valor de n.
+    2. Se crea un arreglo base con múltiplos de n:
+            {4n, 3n, 2n, 3n, 4n}
+    3. Se imprimen 5 filas usando dos ciclos:
+        • uno para filas
+        • otro para columnas
+    4. Dependiendo de la fila:
+        - En las primeras filas los valores disminuyen.
+        - En las últimas filas los valores aumentan.
+
+    Esto genera un patrón simétrico.
+
+    ------------------------------------------------------------
+
+    Ejemplo:
+
+    Si n = 1
+
+    Arreglo inicial:
+        {4, 3, 2, 3, 4}
+
+    El patrón evoluciona en cada fila generando
+    la forma solicitada en el problema.
+
+    ------------------------------------------------------------
+
+    Complejidad:
+
+        O(1)
+
+    ya que siempre se ejecutan exactamente
+    5 × 5 iteraciones.
+
+    ------------------------------------------------------------
+*/
+
+#include <stdio.h>
+
+int main() {
+
+    int n = 0;  // Variable que guardará el número que ingrese el usuario
+
+    // Leemos el valor de n desde la entrada estándar
+    scanf("%d", &n);
+
+    /*
+        Inicializamos el arreglo usando múltiplos de n
+
+        Ejemplo:
+        Si n = 1 → {4,3,2,3,4}
+        Si n = 2 → {8,6,4,6,8}
+    */
+    int arr[] = {4*n, 3*n, 2*n, 3*n, 4*n};
+
+    // Bucle externo: controla las filas (5 filas)
+    for(int j = 0; j < 5; j++){
+
+        // Bucle interno: recorre cada columna del arreglo
+        for(int i = 0; i < 5; i++){
+
+            /*
+                Si estamos en las filas inferiores
+                (fila 4 y 5 del patrón),
+                aumentamos el valor del arreglo.
+            */
+            if(j >= 3){
+                arr[i] = arr[i] + n;
+            }
+
+            // Imprimimos la coordenada en el formato solicitado
+            printf("(%d, 0) ", arr[i]);
+
+            /*
+                Si estamos en las primeras filas
+                (parte superior del patrón),
+                reducimos el valor después de imprimir.
+            */
+            if(j < 2){
+                arr[i] = arr[i] - n;
+            }
+
+        }
+
+        // Salto de línea al terminar cada fila
+        printf("\n");
+    }
+
+    return 0;
+}

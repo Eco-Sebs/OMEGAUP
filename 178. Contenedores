@@ -1,0 +1,144 @@
+/*
+    Problema: Contenedores
+    https://omegaup.com/arena/problem/Contenedores/
+
+    ------------------------------------------------------------
+
+    Descripción:
+
+    Se tienen N pelotas idénticas y K contenedores distintos.
+    Los contenedores pueden quedar vacíos.
+
+    El objetivo es calcular cuántas formas diferentes existen
+    de repartir todas las pelotas entre los contenedores.
+
+    Debido a que el número de combinaciones puede ser muy grande,
+    el resultado debe imprimirse módulo:
+
+        1000000009
+
+    ------------------------------------------------------------
+
+    Interpretación matemática:
+
+    Este problema corresponde a una combinación con repetición.
+
+    La fórmula matemática sería:
+
+        C(N + K - 1, K - 1)
+
+    donde:
+        N = pelotas
+        K = contenedores
+
+    En lugar de usar factoriales (que pueden causar overflow),
+    se utiliza programación dinámica.
+
+    ------------------------------------------------------------
+
+    Idea de la solución (Programación Dinámica):
+
+    Definimos una tabla:
+
+        dp[i][j]
+
+    donde:
+
+        dp[i][j] = número de formas de repartir
+                   i pelotas en j contenedores.
+
+    ------------------------------------------------------------
+
+    Relación de recurrencia:
+
+        dp[i][j] = dp[i][j-1] + dp[i-1][j]
+
+    Explicación:
+
+    1) dp[i][j-1]
+       El contenedor j está vacío,
+       entonces repartimos las i pelotas
+       en los j-1 contenedores anteriores.
+
+    2) dp[i-1][j]
+       El contenedor j tiene al menos una pelota.
+       Colocamos una pelota ahí y repartimos
+       las restantes en los j contenedores.
+
+    ------------------------------------------------------------
+
+    Casos base:
+
+        dp[0][j] = 1
+        Si no hay pelotas, solo hay una forma:
+        todos los contenedores vacíos.
+
+        dp[i][0] = 0
+        No se pueden repartir pelotas
+        si no hay contenedores.
+
+    ------------------------------------------------------------
+
+    Complejidad:
+
+        Tiempo:  O(N * K)
+        Memoria: O(N * K)
+
+    ------------------------------------------------------------
+*/
+
+#include <stdio.h>
+
+#define MOD 1000000009
+
+// dp[i][j] = número de formas de repartir i pelotas en j contenedores
+int dp[1001][1001];
+
+int main() {
+
+    int N, K;
+
+    // Leer N (pelotas) y K (contenedores)
+    scanf("%d %d", &N, &K);
+
+    /*
+        Caso base: 0 pelotas
+
+        Para cualquier número de contenedores,
+        solo existe una forma de repartirlas:
+        todos los contenedores quedan vacíos.
+    */
+    for (int j = 0; j <= K; j++) {
+        dp[0][j] = 1;
+    }
+
+    /*
+        Construcción de la tabla de programación dinámica
+    */
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= K; j++) {
+
+            /*
+                Caso 1:
+                El contenedor j está vacío
+            */
+            int caso1 = dp[i][j - 1];
+
+            /*
+                Caso 2:
+                El contenedor j tiene al menos una pelota
+            */
+            int caso2 = dp[i - 1][j];
+
+            /*
+                Sumamos ambos casos y aplicamos módulo
+            */
+            dp[i][j] = (caso1 + caso2) % MOD;
+        }
+    }
+
+    // Resultado final: formas de repartir N pelotas en K contenedores
+    printf("%d\n", dp[N][K]);
+
+    return 0;
+}

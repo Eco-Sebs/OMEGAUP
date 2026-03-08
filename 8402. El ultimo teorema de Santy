@@ -1,0 +1,174 @@
+/*
+    Problema: El último teorema de Santy
+    https://omegaup.com/arena/problem/El-ultimo-teorema-de-Santy/
+
+    ------------------------------------------------------------
+
+    Descripción:
+
+    Se reciben varios números pares mayores que 2.
+    Para cada número se debe determinar si puede
+    expresarse como la suma de dos números primos.
+
+    Si es posible, se deben imprimir dos primos
+    que sumen ese número.
+
+    Si no es posible, se debe imprimir:
+
+        -1 -1
+
+    ------------------------------------------------------------
+
+    Relación matemática:
+
+    Este problema está relacionado con la famosa
+    Conjetura de Goldbach, la cual afirma que:
+
+        "Todo número par mayor que 2
+         puede expresarse como la suma
+         de dos números primos."
+
+    En este problema simplemente buscamos
+    encontrar algún par de primos que cumpla
+    con esta propiedad.
+
+    ------------------------------------------------------------
+
+    Idea de la solución:
+
+    Para cada número val:
+
+    1. Si el número es impar o menor o igual a 2
+       no puede escribirse como suma de dos primos.
+       → imprimir -1 -1.
+
+    2. Verificar el caso especial:
+
+            val = 2 + (val - 2)
+
+       Si (val - 2) es primo,
+       entonces ya encontramos la solución.
+
+    3. En caso contrario, buscar dos primos
+       recorriendo únicamente números impares:
+
+            i + (val - i)
+
+       y verificar si ambos son primos.
+
+    4. El recorrido se hace hasta val/2,
+       ya que después de ese punto
+       los pares se repiten.
+
+    ------------------------------------------------------------
+
+    Complejidad aproximada:
+
+        Verificación de primo:  O(√n)
+        Búsqueda de pares:      O(n/2)
+
+    En conjunto:
+
+        O(n√n)
+
+    lo cual es suficiente para los límites
+    típicos del problema.
+
+    ------------------------------------------------------------
+*/
+
+#include <stdio.h>
+
+/*
+    Función que verifica si un número es primo.
+
+    Un número primo solo es divisible
+    entre 1 y él mismo.
+*/
+int esPrimo(int n) {
+
+    // Si el número es menor que 2, no es primo
+    if (n < 2) {
+        return 0;
+    }
+
+    /*
+        Probamos posibles divisores desde 2
+        hasta la raíz cuadrada de n.
+
+        Si encontramos alguno que divida exactamente,
+        entonces el número no es primo.
+    */
+    for (long i = 2; i * i <= n; i++) {
+        if (n % i == 0)
+            return 0;
+    }
+
+    // Si no encontramos divisores, es primo
+    return 1;
+}
+
+/*
+    Función que busca dos números primos
+    cuya suma sea igual al valor dado.
+*/
+void opera(long val) {
+
+    // Si el número no es válido (no es par o <= 2)
+    if (val <= 2 || val % 2 != 0) {
+        printf("-1 -1\n");
+        return;
+    }
+
+    /*
+        Caso especial con el número 2.
+
+        Si (val - 2) es primo,
+        entonces:
+
+            val = 2 + (val - 2)
+    */
+    if (esPrimo(val - 2)) {
+        printf("2 %ld\n", val - 2);
+        return;
+    }
+
+    /*
+        Buscamos pares de números primos.
+
+        Solo probamos números impares
+        porque todos los primos mayores que 2
+        son impares.
+    */
+    for (long i = 3; i <= val / 2; i += 2) {
+
+        if (esPrimo(i) && esPrimo(val - i)) {
+            printf("%ld %ld\n", i, val - i);
+            return;
+        }
+    }
+
+    // Si no encontramos ningún par válido
+    printf("-1 -1\n");
+}
+
+int main() {
+
+    long tam = 0;
+
+    // Cantidad de números a evaluar
+    scanf("%ld", &tam);
+
+    long val = 0;
+
+    // Procesamos cada número
+    while (tam--) {
+
+        scanf("%ld", &val);
+
+        // Ejecutamos la búsqueda
+        opera(val);
+    }
+
+    return 0;
+}

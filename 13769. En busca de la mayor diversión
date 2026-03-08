@@ -1,0 +1,110 @@
+/*
+    Problema: Diversión (EDM 2021)
+    https://omegaup.com/arena/problem/edm2021n1-diversion/
+
+    ------------------------------------------------------------
+
+    Descripción:
+
+    Se reciben N números enteros que representan la cantidad
+    de diversión que aporta cada actividad o elemento.
+
+    El objetivo es calcular la máxima diversión posible si
+    se pueden elegir todos los valores excepto el menor.
+
+    En otras palabras:
+
+        Resultado = suma de todos los valores − valor mínimo
+
+    ------------------------------------------------------------
+
+    Ejemplo:
+
+        Entrada:
+            5
+            3 28 1 4 3
+
+        Suma total:
+            3 + 28 + 1 + 4 + 3 = 39
+
+        Mínimo:
+            1
+
+        Resultado:
+            39 − 1 = 38
+
+    ------------------------------------------------------------
+
+    Idea de la solución:
+
+    En lugar de guardar todos los valores en un arreglo
+    y después calcular el mínimo y la suma, podemos hacerlo
+    en una sola pasada.
+
+    Durante la lectura de los números:
+
+        1. Acumulamos la suma total.
+        2. Mantenemos actualizado el valor mínimo.
+
+    Al final simplemente calculamos:
+
+        suma_total - minimo
+
+    ------------------------------------------------------------
+
+    Complejidad:
+
+        Tiempo:  O(n)
+        Memoria: O(1)
+
+    porque solo recorremos los datos una vez y usamos
+    variables auxiliares.
+
+    ------------------------------------------------------------
+*/
+
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+int main(){
+
+    int n = 0;      // Cantidad de valores
+    int aux = 0;    // Suma total de los valores
+    int aux2 = 0;   // Valor mínimo encontrado
+    int aux3 = 0;   // Valor leído en cada iteración
+
+    // Leer cantidad de elementos
+    scanf("%d", &n);
+
+    for(int i = 0; i < n; i++){
+
+        // Leer cada valor
+        scanf("%d", &aux3);
+
+        /*
+            Actualizamos el valor mínimo.
+
+            Si es el primer elemento o
+            encontramos un valor menor,
+            lo guardamos como nuevo mínimo.
+        */
+        if(aux3 < aux2){
+            aux2 = aux3;
+        }
+        else if(i == 0){
+            aux2 = aux3;
+        }
+
+        // Acumulamos la suma total
+        aux += aux3;
+    }
+
+    /*
+        Resultado final:
+        suma total menos el valor mínimo
+    */
+    printf("%d", aux - aux2);
+
+    return 0;
+}

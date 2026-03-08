@@ -1,0 +1,124 @@
+/*
+    Problema: Supermercado
+    https://omegaup.com/arena/problem/Supermercado/
+
+    ------------------------------------------------------------
+
+    Descripción:
+
+    El problema consiste en leer múltiples líneas de números enteros.
+    Cada línea contiene varios números separados por espacios o tabuladores.
+
+    El objetivo es calcular la suma de los números en cada línea
+    e imprimir dicha suma.
+
+    Ejemplo de entrada:
+
+        10 20 30
+        5 5
+        7 8 9 10
+
+    Salida esperada:
+
+        60
+        10
+        34
+
+    ------------------------------------------------------------
+
+    Idea de la solución:
+
+    En lugar de usar funciones como scanf o fgets, el programa lee
+    la entrada carácter por carácter utilizando getchar().
+
+    Esto permite construir manualmente cada número y detectar:
+
+        • dígitos
+        • espacios o tabuladores
+        • saltos de línea
+
+    El procedimiento es:
+
+    1. Construir los números leyendo dígitos consecutivos.
+    2. Cuando aparece un espacio o tabulador, el número actual
+       se agrega a la suma de la línea.
+    3. Cuando aparece un salto de línea, se imprime la suma
+       acumulada y se reinician las variables.
+    4. El proceso continúa hasta llegar al final del archivo (EOF).
+
+    ------------------------------------------------------------
+
+    Complejidad:
+
+        O(n)
+
+    donde n es el número total de caracteres en la entrada.
+
+    ------------------------------------------------------------
+*/
+
+#include <stdio.h>
+
+int main(){
+
+    int suma = 0, num = 0;   // Acumuladores para la suma y el número actual
+    int ln = 0;              // Indica si actualmente estamos leyendo un número
+    int c = 0;               // Variable para leer cada carácter
+
+    /*
+        Leer carácter por carácter hasta llegar a EOF
+        (End Of File), es decir, hasta que termine la entrada.
+    */
+    while((c = getchar()) != EOF){
+
+        /*
+            Si el carácter es un dígito (0-9),
+            construimos el número actual.
+
+            Ejemplo:
+                '1' '2' '3'
+
+            num = 1
+            num = 12
+            num = 123
+        */
+        if(c >= '0' && c <= '9'){
+            num = num * 10 + (c - '0');
+
+            // Indicamos que estamos leyendo un número
+            ln = 1;
+        }
+
+        /*
+            Si encontramos un espacio o tabulador,
+            significa que el número terminó.
+        */
+        if(c == ' ' || c == '\t'){
+            suma += num;   // Agregar número a la suma
+            num = 0;       // Reiniciar número
+            ln = 0;        // Ya no estamos leyendo número
+        }
+
+        /*
+            Si encontramos un salto de línea,
+            significa que terminó la fila actual.
+        */
+        else if(c == '\n'){
+
+            // Si la línea terminó justo después de un número
+            if(ln){
+                suma += num;
+            }
+
+            // Imprimir la suma acumulada de esa línea
+            printf("%d\n", suma);
+
+            // Reiniciar variables para la siguiente línea
+            suma = 0;
+            num = 0;
+            ln = 0;
+        }
+    }
+
+    return 0;
+}

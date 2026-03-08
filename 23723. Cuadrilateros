@@ -1,0 +1,114 @@
+/*
+    Problema: Cuadriláteros
+    https://omegaup.com/arena/problem/Cuadrilateros/
+
+    ------------------------------------------------------------
+
+    Descripción:
+
+    Se reciben 4 números enteros que representan las longitudes
+    de los lados de un cuadrilátero.
+
+    El objetivo es determinar qué tipo de figura es:
+
+        • Cuadrado
+        • Rectángulo
+        • Irregular
+
+    Reglas de clasificación:
+
+    1. Cuadrado
+       Todos los lados tienen la misma longitud.
+
+    2. Rectángulo
+       Existen dos pares de lados iguales.
+
+    3. Irregular
+       No cumple con ninguna de las condiciones anteriores.
+
+    ------------------------------------------------------------
+
+    Idea de la solución:
+
+    Para simplificar la comparación entre los lados,
+    primero se ordenan los valores de menor a mayor.
+
+    Ejemplo:
+        Entrada: 5 3 5 3
+        Ordenado: 3 3 5 5
+
+    Una vez ordenados:
+
+        arr[0] <= arr[1] <= arr[2] <= arr[3]
+
+    Podemos evaluar fácilmente:
+
+    • Cuadrado
+        arr[0] == arr[3]
+
+    • Rectángulo
+        arr[0] == arr[1]  &&  arr[2] == arr[3]
+
+    • Irregular
+        cualquier otro caso
+
+    ------------------------------------------------------------
+
+    Complejidad:
+
+        Ordenamiento: O(n log n)
+
+    Como n = 4, el costo es prácticamente constante.
+
+    ------------------------------------------------------------
+*/
+
+#include <stdio.h>
+#include <algorithm>
+
+int main(){
+
+    int arr[4];  // Arreglo para almacenar las longitudes de los 4 lados
+
+    // Leer los 4 lados del cuadrilátero
+    for(int i = 0; i < 4; i++){
+        scanf("%d", &arr[i]);
+    }
+
+    /*
+        Ordenamos los valores del arreglo.
+
+        Esto permite agrupar lados iguales
+        y simplifica las comparaciones posteriores.
+    */
+    std::sort(arr, arr + 4);
+
+    /*
+        Si el primer elemento es igual al último,
+        entonces todos los lados son iguales.
+    */
+    if(arr[0] == arr[3]){
+        printf("Cuadrado");
+    }
+
+    /*
+        Si existen dos pares de lados iguales:
+            arr[0] == arr[1]
+            arr[2] == arr[3]
+
+        entonces es un rectángulo.
+    */
+    else if(arr[0] == arr[1] && arr[2] == arr[3]){
+        printf("Rectangulo");
+    }
+
+    /*
+        En cualquier otro caso,
+        el cuadrilátero se considera irregular.
+    */
+    else{
+        printf("Irregular");
+    }
+
+    return 0;
+}

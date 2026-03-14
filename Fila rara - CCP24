@@ -1,0 +1,133 @@
+/**
+ * Problema: Fila rara - CCP24
+ * Link: https://omegaup.com/arena/problem/ccp24-fila-rara/
+ * 
+ * Descripción:
+ * Dadas n-1 relaciones donde A está detrás de B, determinar el orden
+ * correcto de la fila desde el primero hasta el último.
+ * 
+ * Ejemplo:
+ * Si A está detrás de B, significa que B está delante de A
+ * Entrada: "ana detras luis" significa que luis está delante de ana
+ * 
+ * Estrategia:
+ * 1. Construir un mapa que para cada persona, guarde quién está detrás
+ * 2. Identificar a la primera persona (la que no está detrás de nadie)
+ * 3. Recorrer secuencialmente usando el mapa
+ */
+
+#include <iostream>
+#include <unordered_map>
+#include <unordered_set>
+
+using namespace std;
+
+int main() {
+    // n = número de personas en la fila
+    int n;
+    cin >> n;
+
+    /**
+     * siguiente: mapa que almacena la relación "quién está detrás de quién"
+     * clave: persona actual
+     * valor: persona que está detrás de ella
+     * 
+     * Ejemplo: si siguiente["luis"] = "ana", significa que ana está detrás de luis
+     * Es decir: luis -> ana
+     */
+    unordered_map<string, string> siguiente;
+    
+    /**
+     * todos: conjunto con todas las personas mencionadas
+     * atras: conjunto con las personas que están detrás de alguien
+     * La primera persona será la que NO esté en 'atras'
+     */
+    unordered_set<string> todos;
+    unordered_set<string> atras;
+
+    string A, B;  // A está detrás de B
+
+    // Leemos las n-1 relaciones
+    for (int i = 0; i < n - 1; i++) {
+        cin >> A >> B;
+        
+        /**
+         * Importante: Si A está detrás de B, entonces B está delante de A
+         * Guardamos: siguiente[B] = A (B tiene a A detrás)
+         */
+        siguiente[B] = A;
+        
+        // Registramos ambas personas en el conjunto de todos
+        todos.insert(A);
+        todos.insert(B);
+        
+        // A está detrás de alguien, así que la agregamos a 'atras'
+        atras.insert(A);
+    }
+
+    /**
+     * Buscamos a la primera persona de la fila
+     * La primera persona es la que NO está en el conjunto 'atras'
+     * Es decir, nadie está detrás de ella (no es A en ninguna relación)
+     */
+    string primero;
+    for (auto persona : todos) {
+        if (atras.find(persona) == atras.end()) {
+            primero = persona;
+            break;
+        }
+    }
+
+    /**
+     * Recorremos la fila desde el primero hasta el último
+     * Usamos el mapa 'siguiente' para encontrar quién está detrás de cada persona
+     */
+    string actual = primero;
+    while (true) {
+        // Imprimimos la persona actual
+        cout << actual << endl;
+        
+        // Si esta persona no tiene a nadie detrás, terminamos
+        if (siguiente.find(actual) == siguiente.end()) {
+            break;
+        }
+        
+        // Nos movemos a la persona que está detrás
+        actual = siguiente[actual];
+    }
+
+    return 0;
+}
+
+/**
+ * Análisis de complejidad:
+ * Tiempo: O(n) - recorremos las relaciones una vez y luego recorremos la fila
+ * Espacio: O(n) - almacenamos todas las personas en los conjuntos y mapa
+ * 
+ * Ejemplo de ejecución:
+ * 
+ * Entrada:
+ * 4
+ * ana detras luis
+ * pedro detras ana
+ * maria detras pedro
+ * 
+ * Proceso:
+ * 1. siguiente["luis"] = "ana"  (luis -> ana)
+ *    siguiente["ana"] = "pedro"  (ana -> pedro)
+ *    siguiente["pedro"] = "maria" (pedro -> maria)
+ * 
+ * 2. todos = {luis, ana, pedro, maria}
+ *    atras = {ana, pedro, maria}
+ * 
+ * 3. primera persona: luis (no está en atras)
+ * 
+ * 4. Recorrido:
+ *    luis -> ana -> pedro -> maria
+ * 
+ * Salida:
+ * luis
+ * ana
+ * pedro
+ * maria
+ */
